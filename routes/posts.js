@@ -18,7 +18,7 @@ router.get('/:id', (req, res) => {
   db.findById(req.params.id)
     .then(post =>
       post.length > 0
-        ? res.status(200).json(post)
+        ? res.status(200).json(post[0])
         : res
             .status(404)
             .json({ message: 'The post with the specified ID does not exist.' })
