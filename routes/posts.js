@@ -66,4 +66,31 @@ router.get('/:id/comments', async (req, res) => {
   }
 });
 
+router.post('/:id/comments', async (req, res) => {
+  const { id } = req.params;
+  const newPost = req.body;
+  if (!newPost.text) {
+    return res
+      .status(400)
+      .json({ errorMessage: 'Please provide text for the comment' });
+  }
+  try {
+    const postWasFound = await db.findById(id).then(post => post.length > 0);
+
+    return postWasFound
+      ? await db
+          .insertComment({ ...newPost, post_id: id })
+          .then(async ({ id }) =>
+            res.status(201).json(...(await db.findCommentById(id)))
+          )
+      : res
+          .status(404)
+          .json({ message: 'The post with the specified ID does not exist.' });
+  } catch (error) {
+    res.status(500).json({
+      error: 'There was an error while saving the comment to the database',
+    });
+  }
+});
+
 module.exports = router;
