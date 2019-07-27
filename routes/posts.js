@@ -14,6 +14,23 @@ router.get('/', (req, res) => {
     );
 });
 
+router.post('/', (req, res) => {
+  const post = req.body;
+
+  if (!post.title || !post.contents) {
+    return res
+      .status(400)
+      .json({ errorMessage: 'Please provide title and contents for post.' });
+  }
+  db.insert(post)
+    .then(async ({ id }) => res.status(201).json(...(await db.findById(id))))
+    .catch(() =>
+      res.status(500).json({
+        error: 'There was an error while saving the post to the database',
+      })
+    );
+});
+
 router.get('/:id', (req, res) => {
   db.findById(req.params.id)
     .then(post =>
