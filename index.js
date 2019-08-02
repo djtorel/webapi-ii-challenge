@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 
 const postsRoutes = require('./routes/posts');
 
@@ -7,6 +8,7 @@ server.use(express.json());
 
 server.use('/api/posts', postsRoutes);
 
-server.listen(8000, () => console.log('API running on port 8000'));
+const port = process.env.PORT || 4000;
+server.listen(port, () => console.log(`API running on port ${port}`));
 
 // mvp complete
